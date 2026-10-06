@@ -3,9 +3,14 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+for linea in (BASE_DIR / '.env').read_text().splitlines():
+    if '=' in linea:
+        clave, valor = linea.split('=', 1)
+        os.environ.setdefault(clave.strip(), valor.strip())
+
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
-DEBUG = False
+DEBUG = os.environ['DJANGO_DEBUG'] == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -16,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'cowork',
 ]
 
@@ -50,8 +56,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ['DB_ENGINE'],
+        'NAME': os.environ['DB_NAME'],
     }
 }
 
@@ -70,9 +76,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-cl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -81,3 +87,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
+}

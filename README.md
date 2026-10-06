@@ -26,24 +26,28 @@ pip install -r requirements.txt
 ```
 DJANGO_SECRET_KEY=...
 DJANGO_DEBUG=True
-DB_ENGINE=django.db.backends.sqlite3
-DB_NAME=db.sqlite3
+DB_ENGINE=django.db.backends.mysql
+DB_NAME=cowork
+DB_USER=cowork_user
+DB_PASSWORD=...
+DB_HOST=localhost
+DB_PORT=3306
 ```
 
-## Base de datos (SQLite)
+## Base de datos (MySQL 8)
 
-Ejecutar desde la raíz del proyecto, en este orden:
+Ejecutar como `root` desde la raíz del proyecto, en este orden (o abrir cada script en MySQL Workbench y ejecutarlo):
 
 | Paso | Comando | Resultado |
 |---|---|---|
-| 1. Crear BD | `python -c "import sqlite3; sqlite3.connect(':memory:').executescript(open('sql/01_crear_bd.sql').read())"` | `ATTACH DATABASE` crea `db.sqlite3` |
-| 2. Tablas | `python manage.py migrate` | Crea las tablas del modelo y de Django |
-| 3. Crear usuario | `python -c "import sqlite3; sqlite3.connect('db.sqlite3').executescript(open('sql/02_crear_usuario.sql').read())"` | Usuario `cowork_user` en `auth_user` |
-| 4. Asignar permisos | `python -c "import sqlite3; sqlite3.connect('db.sqlite3').executescript(open('sql/03_permisos.sql').read())"` | Permisos add/change/delete/view de los 4 modelos |
+| 1. Crear BD | `mysql -u root -p -e "source sql/01_crear_bd.sql"` | Base de datos `cowork` (utf8mb4) |
+| 2. Crear usuario | `mysql -u root -p -e "source sql/02_crear_usuario.sql"` | Usuario `cowork_user@localhost` |
+| 3. Asignar permisos | `mysql -u root -p -e "source sql/03_permisos.sql"` | `GRANT` sobre `cowork.*` |
+| 4. Tablas | `python manage.py migrate` | Django crea las tablas conectado como `cowork_user` |
 
-SQLite no tiene usuarios ni `GRANT` propios, por lo que el usuario y los permisos se crean en las tablas de autenticación de Django. `cowork_user` (contraseña `cowork_pass_2026`) entra a `/admin/` y solo puede gestionar sedes, salas, clientes y reservas.
+`cowork_user` recibe solo los permisos que Django necesita sobre la base `cowork`: leer y escribir datos (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) y crear o modificar tablas en las migraciones (`CREATE`, `ALTER`, `DROP`, `INDEX`, `REFERENCES`). No tiene acceso a otras bases de datos.
 
-Para un administrador completo:
+Para entrar a `/admin/`:
 
 ```powershell
 python manage.py createsuperuser

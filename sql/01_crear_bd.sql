@@ -1,1 +1,1 @@
-ATTACH DATABASE 'db.sqlite3' AS cowork;
+CREATE DATABASE IF NOT EXISTS cowork CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

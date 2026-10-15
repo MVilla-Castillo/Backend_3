@@ -13,5 +13,7 @@ router.register('reservas', views.ReservaViewSet)
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('perfil/', views.perfil, name='perfil'),
+    path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
     path('api/', include(router.urls)),
 ]

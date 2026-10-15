@@ -61,11 +61,16 @@ python manage.py runserver
 
 | URL | Descripción |
 |---|---|
-| http://127.0.0.1:8000/ | Bienvenida |
+| http://127.0.0.1:8000/ | Bienvenida (pública) |
+| http://127.0.0.1:8000/login/ | Inicio de sesión |
+| http://127.0.0.1:8000/perfil/ | Vista protegida basada en función (`@login_required`) |
+| http://127.0.0.1:8000/dashboard/ | Vista protegida basada en clase (`LoginRequiredMixin`) |
 | http://127.0.0.1:8000/admin/ | Administrador |
 | http://127.0.0.1:8000/api/ | Raíz de la API |
 
 ## Endpoints
+
+Requieren sesión iniciada (`IsAuthenticated`). Sin sesión responden 403.
 
 | Recurso | Lista / Crear | Detalle / Editar / Eliminar |
 |---|---|---|
@@ -85,10 +90,10 @@ python manage.py runserver
 ## Ejemplo CRUD
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/sedes/ -H "Content-Type: application/json" -d "{\"nombre\":\"Centro\",\"direccion\":\"Av 1\",\"ciudad\":\"Santiago\"}"
-curl http://127.0.0.1:8000/api/sedes/1/
-curl -X PATCH http://127.0.0.1:8000/api/sedes/1/ -H "Content-Type: application/json" -d "{\"telefono\":\"221234567\"}"
-curl -X DELETE http://127.0.0.1:8000/api/sedes/1/
+curl -u usuario:clave -X POST http://127.0.0.1:8000/api/sedes/ -H "Content-Type: application/json" -d "{\"nombre\":\"Centro\",\"direccion\":\"Av 1\",\"ciudad\":\"Santiago\"}"
+curl -u usuario:clave http://127.0.0.1:8000/api/sedes/1/
+curl -u usuario:clave -X PATCH http://127.0.0.1:8000/api/sedes/1/ -H "Content-Type: application/json" -d "{\"telefono\":\"221234567\"}"
+curl -u usuario:clave -X DELETE http://127.0.0.1:8000/api/sedes/1/
 ```
 
 ## Estructura

@@ -1,4 +1,7 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.views.generic import TemplateView
 from rest_framework import viewsets
 
 from .models import Cliente, Reserva, Sala, Sede
@@ -7,6 +10,14 @@ from .serializers import ClienteSerializer, ReservaSerializer, SalaSerializer, S
 
 def index(request):
     return render(request, 'cowork/index.html')
+
+@login_required
+def perfil(request):
+    return render(request, 'cowork/privada.html', {'titulo': 'Vista basada en función'})
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'cowork/privada.html'
+    extra_context = {'titulo': 'Vista basada en clase'}
 
 def error_404(request, exception):
     return render(request, '404.html')
